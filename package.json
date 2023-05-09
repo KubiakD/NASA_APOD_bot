@@ -1,7 +1,7 @@
 {
-  "name": "fsdf",
+  "name": "apod-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "a Twitter bot that posts a photo provided by NASA's API every day.",
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
