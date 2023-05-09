@@ -24,7 +24,22 @@ const config = {
 const client = new twitter_api_v2_1.TwitterApi(config);
 const rwClient = client.readWrite;
 const v2Client = rwClient.v2;
+const fetchData = () => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_API_KEY}`);
+    const apiData = yield response.json();
+    const { url, explanation, title, copyright } = apiData;
+    const imageData = yield fetch(url);
+    const buffer = yield imageData.arrayBuffer();
+    const mediaId = yield client.v1.uploadMedia(Buffer.from(buffer), { mimeType: 'image/jpg' });
+    return [mediaId, explanation, title, copyright];
+});
 const postTweet = () => __awaiter(void 0, void 0, void 0, function* () {
-    const createdTweet = yield v2Client.tweet('Hello World!');
+    const [mediaId, explanation, title, copyright] = yield fetchData();
+    const thread = [];
+    for (let i = 0; i < explanation.length; i = i + 280) {
+        thread.push(explanation.substr(i, 280));
+    }
+    ;
+    const createdTweet = yield v2Client.tweetThread([{ text: `"${title}" by ${copyright}`, media: { media_ids: [mediaId] } }, ...thread]);
 });
 postTweet();
