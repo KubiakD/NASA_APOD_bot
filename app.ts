@@ -1,6 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
 import dotenv from 'dotenv';
-import { title } from 'process';
 
 dotenv.config();
 
@@ -30,6 +29,10 @@ const postTweet = async () => {
   for (let i=0; i<explanation.length; i=i+280) {
     thread.push(explanation.substr(i, 280));
   };
+  if (!copyright){
+    await v2Client.tweetThread([{ text: `"${title}"`, media: { media_ids: [mediaId] } },...thread,]);
+    return;
+  }
   const createdTweet = await v2Client.tweetThread([{ text: `"${title}" by ${copyright}`, media: { media_ids: [mediaId] } },...thread]);
 };
 postTweet();
