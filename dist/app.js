@@ -35,11 +35,20 @@ const fetchData = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 const postTweet = () => __awaiter(void 0, void 0, void 0, function* () {
     const [mediaId, explanation, title, copyright] = yield fetchData();
-    const thread = [];
-    for (let i = 0; i < explanation.length; i = i + 280) {
-        thread.push(explanation.substr(i, 280));
+    const words = explanation.split(' ');
+    let thread = [''];
+    for (let i = 0; i < words.length; i++) {
+        if ((thread[thread.length - 1] + words[i]).length > 280) {
+            thread.push(words[i]);
+        }
+        else {
+            thread[thread.length - 1] += ' ' + words[i];
+        }
     }
-    ;
+    if (!copyright) {
+        yield v2Client.tweetThread([{ text: `"${title}"`, media: { media_ids: [mediaId] } }, ...thread,]);
+        return;
+    }
     const createdTweet = yield v2Client.tweetThread([{ text: `"${title}" by ${copyright}`, media: { media_ids: [mediaId] } }, ...thread]);
 });
 postTweet();

@@ -25,10 +25,15 @@ const fetchData = async () => {
 };
 const postTweet = async () => {
   const [mediaId, explanation, title, copyright] = await fetchData();
-  const thread = [];
-  for (let i=0; i<explanation.length; i=i+280) {
-    thread.push(explanation.substr(i, 280));
-  };
+  const words = explanation.split(' ');
+  let thread = [''];
+  for (let i = 0; i < words.length; i++) {
+    if ((thread[thread.length - 1] + words[i]).length > 280) {
+      thread.push(words[i]);
+    } else {
+      thread[thread.length - 1] += ' ' + words[i];
+    }
+  }
   if (!copyright){
     await v2Client.tweetThread([{ text: `"${title}"`, media: { media_ids: [mediaId] } },...thread,]);
     return;
