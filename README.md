@@ -1,6 +1,7 @@
 # NASA_APOD_bot
 ## General info
 This is a simple Twitter bot that posts a photo provided by NASA's API every day.
+You can see this bot in action [here](https://twitter.com/APOD_bot1)
 ## Technologies
 This app was made using: 
 * NodeJS
